@@ -12,3 +12,32 @@ statements = [
     {"statement": "I stay calm and composed when there's disagreement.", "trait": "Calm Under Pressure"}
 ]
 
+def take_quiz(statements: list[dict[str, str]]) -> dict[str, int]:
+    """
+    Conducts a personality and work-style quiz to assess user traits based on their responses to statements rated on a scale from 1 to 5.
+    :param statements: a statement and associated trait
+    :return:
+    """
+    print("Answer on a scale from 1 (Strongly Disagree) to 5 (Strongly Agree)")
+    scores: dict[str, int] = {}
+    for s in statements:
+        trait = s["trait"]
+        if trait not in scores:
+            scores[trait] = 0
+
+    for s in statements:
+        while True:
+            try:
+                answer: int = int(input(s["statement"] + " "))
+                if 1 <= answer <= 5:
+                    break
+                else:
+                    print("Invalid input. Please enter a number 1 to 5.")
+            except ValueError:
+                print("Invalid input. Please enter a number (1 to 5).")
+
+        scores[s["trait"]] += answer
+
+    return scores
+
+
