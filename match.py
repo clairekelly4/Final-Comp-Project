@@ -36,3 +36,4 @@ def score_pair(student1: Dict, student2: Dict) -> float:
    # combine both metrics; prioritize diverse strengths but similar work styles
    return diversity - similarity # higher score = better
 
+
