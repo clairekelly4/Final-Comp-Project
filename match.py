@@ -36,4 +36,17 @@ def score_pair(student1: Dict, student2: Dict) -> float:
    # combine both metrics; prioritize diverse strengths but similar work styles
    return diversity - similarity # higher score = better
 
+def match_students(students: List[Dict], group_size: int) -> List[List[str]]:
+   """
+   matches students into groups of a specified size based on their quiz responses
+   - tries every pair of unmatched students
+   - adds students one-by-one
+   - calculates group scores
+   - selects the best group in each round
+   :param students: a list of student dictionaries with their name and responses
+   :param group_size: a list of groups and each group is a list of student names
+   :return:
+   """
+   unmatched = students.copy() # students who have not been matched
+   groups: List[List[str]] = []
 
