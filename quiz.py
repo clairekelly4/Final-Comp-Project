@@ -1,14 +1,41 @@
 import gspread
-import pandas as pd
 from oauth2client.service_account import ServiceAccountCredentials
+import pandas as pd
 
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
-client = gspread.authorize(creds)
-sheet = client.open("Group Project Matcher (Responses)").sheet1
-records = sheet.get_all_records()
-df = pd.DataFrame(records)
-print(df.head())
+def load_form_data() -> pd.DataFrame:
+    """
+    connects to google sheet and loads responses into a pandas dataframe
+    :return: form responses with each row representing a students answers
+    """
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+
+    creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+    client = gspread.authorize(creds)
+
+    sheet = client.open("Group Matcher Responses (Clean)").sheet1
+
+    data = sheet.get_all_records()
+    df = pd.DataFrame(data)
+
+    return df
+
+
+def get_individual_scores(df: pd.DataFrame) -> list[dict]:
+    """
+    returns a list of each student's responses
+    :param df: the dataframe of form responses
+    :return: a list of student dictionaries with their name and responses
+    """
+    students = []
+
+    for _, row in df.iterrows():
+        student = {
+            "name": row["Full Name:"],
+            "responses": [int(row[col]) for col in df.columns[3:]]
+        }
+        students.append(student)
+
+    return students
 
 #We plan to create an algorithm that takes the results from the google form/spreadsheet. For the quiz, we ask questions that gauge the personality, work styles, and preferences of team members.
 #For certain questions, members who choose similar numbers for these questions will be more likely to be put in the same group, and for some questions, people put numbers on different ends of the range will be placed together.
