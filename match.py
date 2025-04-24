@@ -50,3 +50,28 @@ def match_students(students: List[Dict], group_size: int) -> List[List[str]]:
    unmatched = students.copy() # students who have not been matched
    groups: List[List[str]] = []
 
+   # runs as long as there are enough unmatched students to make a full group
+   while len(unmatched) >= group_size:
+       best_group = None
+       best_score = -np.inf
+
+       # tries every possible starting pair
+       for i in range(len(unmatched)):
+           for j in range(i + 1, len(unmatched)):
+               group = [unmatched[i], unmatched[j]]
+               # finds next best student to add
+               while len(group) < group_size:
+                   remaining = [s for s in unmatched if s not in group]
+                   if not remaining:
+                       break
+                   scores = [sum(score_pair(s, g) for g in group) for s in remaining]
+                   best_next = remaining[np.argmax(scores)]
+                   group.append(best_next)
+
+               # adds score for every possible pair
+               group_score = sum(score_pair(a, b) for idx, a in enumerate(group) for b in group[idx + 1:])
+               if group_score > best_score:
+                   best_score = group_score
+                   best_group = group
+
+       groups.append([s["name"] for s in best_group])
