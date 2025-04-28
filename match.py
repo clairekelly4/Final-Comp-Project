@@ -22,7 +22,7 @@ def score_pair(student1: Dict, student2: Dict) -> float:
    then subtracts similarity from diversity -> higher score = better match
    :param student1: first student
    :param student2: second student
-   :return:
+   :return: difference in diversity and similarity scores
    """
    # extract quiz responses for both students
    responses1, responses2 = student1['responses'], student2['responses']
@@ -45,7 +45,7 @@ def match_students(students: List[Dict], group_size: int) -> List[List[str]]:
    - selects the best group in each round
    :param students: a list of student dictionaries with their name and responses
    :param group_size: a list of groups and each group is a list of student names
-   :return:
+   :return: list of lists of ideal groupings of students
    """
    unmatched = students.copy() # students who have not been matched
    groups: List[List[str]] = []
