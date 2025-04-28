@@ -5,14 +5,13 @@ import pandas as pd
 def load_form_data() -> pd.DataFrame:
     """
     connects to google sheet and loads responses into a pandas dataframe
-    :return: form responses with each row representing a students answers
     """
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
     creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
     client = gspread.authorize(creds)
 
-    sheet = client.open("Group Matcher Responses (Clean)").sheet1
+    sheet = client.open("Group Project Matching Quiz (Clean)").sheet1
 
     data = sheet.get_all_records()
     df = pd.DataFrame(data)
@@ -31,7 +30,7 @@ def get_individual_scores(df: pd.DataFrame) -> list[dict]:
     for _, row in df.iterrows():
         student = {
             "name": row["Full Name:"],
-            "responses": [int(row[col]) for col in df.columns[3:]]
+            "responses": [int(row[col]) for col in df.columns[3:18]]
         }
         students.append(student)
 

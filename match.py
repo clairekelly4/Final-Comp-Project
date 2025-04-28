@@ -2,9 +2,9 @@ import numpy as np
 from typing import List, Dict
 
 # index ranges in the quiz responses
-work_style_indices = [3, 4, 5, 6, 7]        # similar
-leadership_indices = [8, 9, 10, 11, 12]     # diverse
-coding_indices = [13, 14, 15, 16, 17]       # diverse
+work_style_indices = [0, 1, 2, 3, 4]        # similar
+leadership_indices = [5, 6, 7, 8, 9]     # diverse
+coding_indices = [10, 11, 12, 13, 14]       # diverse
 
 def get_difference(responses1: List[int], responses2: List[int], indices: List[int]) -> float:
     """
@@ -52,26 +52,45 @@ def match_students(students: List[Dict], group_size: int) -> List[List[str]]:
 
    # runs as long as there are enough unmatched students to make a full group
    while len(unmatched) >= group_size:
-       best_group = None
-       best_score = -np.inf
+       group = [unmatched.pop(0)] # start group with first unmatched
 
-       # tries every possible starting pair
-       for i in range(len(unmatched)):
-           for j in range(i + 1, len(unmatched)):
-               group = [unmatched[i], unmatched[j]]
-               # finds next best student to add
-               while len(group) < group_size:
-                   remaining = [s for s in unmatched if s not in group]
-                   if not remaining:
-                       break
-                   scores = [sum(score_pair(s, g) for g in group) for s in remaining]
-                   best_next = remaining[np.argmax(scores)]
-                   group.append(best_next)
+       while len(group) < group_size:
+           best_student = None
+           best_score = -np.inf
 
-               # adds score for every possible pair
-               group_score = sum(score_pair(a, b) for idx, a in enumerate(group) for b in group[idx + 1:])
-               if group_score > best_score:
-                   best_score = group_score
-                   best_group = group
+           for candidate in unmatched:
+               # score candidate based on how well they fit with the current group
+               score = sum(score_pair(candidate, member) for member in group)
+               if score > best_score:
+                   best_score = score
+                   best_student = candidate
 
-       groups.append([s["name"] for s in best_group])
+           group.append(best_student)
+           unmatched.remove(best_student)
+
+       groups.append([s["name"] for s in group])
+
+       # handle any leftover students
+       if unmatched:
+           while len(unmatched) >= 2:  # make groups of 2 or more if possible
+               group = [unmatched.pop(0)]
+               while len(group) < group_size and unmatched:
+                   best_student = None
+                   best_score = -np.inf
+
+                   for candidate in unmatched:
+                       score = sum(score_pair(candidate, member) for member in group)
+                       if score > best_score:
+                           best_score = score
+                           best_student = candidate
+
+                   group.append(best_student)
+                   unmatched.remove(best_student)
+
+               groups.append([s["name"] for s in group])
+
+           # if there is 1 student left, add them to the last group
+           if unmatched:
+               groups[-1].append(unmatched.pop(0)["name"])
+
+       return groups
