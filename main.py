@@ -31,33 +31,19 @@ def main():
     groups = match_students(students, group_size)
 
     print("\nGroup Assignments:")
-    for i, group in enumerate(groups, start=1):
-        print(f"\nGroup {i}:")
-        for name in group:
-            print(f" - {name}")
-
-    #prints group assignments
-
-    print("\nGroup Assignments:")
     for i, group in enumerate(groups):
-        print(f"\nGroup {i+1}:") #prints group number
-        
-#         group_members = [s for s in students if s["name"] in group]
-#         group_score = 0
-#         for idx, member1 in enumerate(group_members):
-#             for member2 in group_members[idx + 1:]:
-#                 group_score += score_pair(member1, member2)
-#         print(f"Group Compatibility Score: {group_score}")
+        print(f"\nGroup {i + 1}:")
 
-        group_members_scores = [student for student in students if student ["name"] in group] #finds full student information(objects) for names in the formed groups
-        group_score = 0 #initialize group compatibility score
-        count = 0 #keeps track of each pair tested
-        for j in range(len(group_members_scores)): #loops through each group member
-            for k in range(j+1, len(group_members_scores)): #compares each pair of students in the group
-                group_score += score_pair(group_members_scores[j], group_members_scores[k]) #adds their compatibility score
-                count +=1 #increases each time a new pair is compared
-        avg_score = group_score/count #calculates average compatibility score of group
-        print(f"Compatibility Score is {avg_score:.2f}") #print compatibility score, and rounds to 2 decimal places
+        # get full student objects for names in the group
+        group_members = [s for s in students if s["name"] in group]
+
+        # calculate total group compatibility score (sum of all pair scores)
+        group_score = 0
+        for idx, member1 in enumerate(group_members):
+            for member2 in group_members[idx + 1:]:
+                group_score += score_pair(member1, member2)
+
+        print(f"Group Compatibility Score: {group_score}")
 
         for name in group: #prints name of students in the group
             print(f" {name}")
