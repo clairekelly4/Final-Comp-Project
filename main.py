@@ -1,5 +1,5 @@
 from quiz import load_form_data, get_individual_scores
-from match import match_students
+from match import match_students, score_pair
 
 def main():
     """
@@ -29,6 +29,12 @@ def main():
         for name in group:
             print(f" - {name}")
 
+        group_members = [s for s in students if s["name"] in group]
+        group_score = 0
+        for idx, member1 in enumerate(group_members):
+            for member2 in group_members[idx + 1:]:
+                group_score += score_pair(member1, member2)
+        print(f"Group Compatibility Score: {group_score}")
 
 if __name__ == "__main__":
     main()
