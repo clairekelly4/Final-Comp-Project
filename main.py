@@ -41,6 +41,13 @@ def main():
     print("\nGroup Assignments:")
     for i, group in enumerate(groups):
         print(f"\nGroup {i+1}:") #prints group number
+        
+#         group_members = [s for s in students if s["name"] in group]
+#         group_score = 0
+#         for idx, member1 in enumerate(group_members):
+#             for member2 in group_members[idx + 1:]:
+#                 group_score += score_pair(member1, member2)
+#         print(f"Group Compatibility Score: {group_score}")
 
         group_members_scores = [student for student in students if student ["name"] in group] #finds full student information(objects) for names in the formed groups
         group_score = 0 #initialize group compatibility score
